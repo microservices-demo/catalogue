@@ -13,7 +13,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"github.com/microservices-demo/microservices-demo/sockshop/catalogue"
+	"github.com/microservices-demo/catalogue"
 	"golang.org/x/net/context"
 	"path/filepath"
 )
