@@ -13,6 +13,7 @@ before_install:
   - go get github.com/go-kit/kit/transport/http 
   - go get github.com/go-sql-driver/mysql 
   - go get github.com/jmoiron/sqlx
+  - go get gopkg.in/DATA-DOG/go-sqlmock.v1
 
 install: true
 
