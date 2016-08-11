@@ -22,8 +22,11 @@ fi
 CODE_DIR=$(cd $SCRIPT_DIR/..; pwd)
 echo $CODE_DIR
 
-
-cp -r $CODE_DIR/ $CODE_DIR/docker/catalogue/
+cp 
+cp -r $CODE_DIR/images/ $CODE_DIR/docker/catalogue/images/
+cp -r $CODE_DIR/cmd/ $CODE_DIR/docker/catalogue/cmd/
+cp -r $CODE_DIR/cmd/ $CODE_DIR/docker/catalogue/cmd/
+cp $CODE_DIR/*.go $CODE_DIR/docker/catalogue/
 
 REPO=${GROUP}/$(basename catalogue);
 
