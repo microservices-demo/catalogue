@@ -7,6 +7,12 @@ go:
 before_install:
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/mattn/goveralls
+  - go get github.com/gorilla/mux 
+  - go get github.com/go-kit/kit/log 
+  - go get github.com/go-kit/kit/endpoint 
+  - go get github.com/go-kit/kit/transport/http 
+  - go get github.com/go-sql-driver/mysql 
+  - go get github.com/jmoiron/sqlx
 
 install: true
 
@@ -17,7 +23,7 @@ script:
   - set -e
   - ./scripts/build.sh;
   - ./test/test.sh unit.py
-  - ./test/test.sh component.py
+#  - ./test/test.sh component.py
 #  - ./test/test.sh container.py --tag $TAG
 
 after_success:
