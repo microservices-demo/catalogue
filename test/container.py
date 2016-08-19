@@ -8,18 +8,27 @@ from util.Dredd import Dredd
 from util.Docker import Docker
 from time import sleep
 
+
 class CatalogueContainerTest(unittest.TestCase):
     TAG = "latest"
     container_name = 'catalogue'
     mysql_container_name = Docker().random_container_name('catalogue-db')
+    
     def __init__(self, methodName='runTest'):
         super(CatalogueContainerTest, self).__init__(methodName)
         self.ip = ""
 
     def setUp(self):
-        Docker().start_container(container_name=self.mysql_container_name, image="mysql", host=self.mysql_container_name, env=[("MYSQL_ROOT_PASSWORD", "abc123"), ("MYSQL_DATABASE", "catalogue")])
-        # todo: a better way to ensure mysql is up
-        sleep(15)
+        Docker().start_container(container_name=self.mysql_container_name,
+                                 image="mysql",
+                                 host=self.mysql_container_name,
+                                 env=[("MYSQL_ROOT_PASSWORD", "abc123"),
+                                      ("MYSQL_DATABASE", "catalogue")])
+        
+        expected = "MySQL init process done. Ready for start up."
+        if not Docker().ensure_output(self.mysql_container_name, expected):
+            self.fail("Mysql failed")
+        
         command = ['docker', 'run',
                    '-d',
                    '--name', CatalogueContainerTest.container_name,
@@ -34,13 +43,13 @@ class CatalogueContainerTest(unittest.TestCase):
         Docker().kill_and_remove(CatalogueContainerTest.mysql_container_name)
 
     def test_catalogue_has_item_id(self):
-        self.wait_or_fail('http://'+ self.ip +':80/catalogue')
+        self.wait_or_fail('http://' + self.ip + ':80/catalogue')
         r = requests.get('http://' + self.ip + '/catalogue', timeout=5)
         data = r.json()
         self.assertIsNotNone(data[0]['id'])
 
     def test_catalogue_has_image(self):
-        self.wait_or_fail('http://'+ self.ip +':80/catalogue')
+        self.wait_or_fail('http://' + self.ip + ':80/catalogue')
         r = requests.get('http://' + self.ip + '/catalogue', timeout=5)
         data = r.json()
         for item in data:
