@@ -5,6 +5,8 @@ services:
 go:
   - 1.6
 before_install:
+  - openssl aes-256-cbc -K $encrypted_790acdb9ad25_key -iv $encrypted_790acdb9ad25_iv
+    -in catalogue_deploy_rsa.enc -out catalogue_deploy_rsa -d
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/mattn/goveralls
   - go get github.com/gorilla/mux 
@@ -18,7 +20,7 @@ before_install:
 install: true
 
 env:
-  - GROUP=weaveworksdemos COMMIT=$TRAVIS_COMMIT TAG=$TRAVIS_TAG;
+  - GROUP=weaveworksdemos COMMIT=$TRAVIS_COMMIT TAG=$TRAVIS_TAG REPO=catalogue;
 
 script:
   - set -e
@@ -36,3 +38,17 @@ after_success:
     fi;
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS;
   - ./scripts/push.sh
+
+before_deploy:
+  - eval "$(ssh-agent -s)"
+  - chmod 600 $TRAVIS_BUILD_DIR/${REPO}_deploy_rsa
+  - ssh-add $TRAVIS_BUILD_DIR/${REPO}_deploy_rsa
+addons:
+  ssh_known_hosts: $BASTION
+deploy:
+  provider: script
+  skip_cleanup: true
+  # The deploy.sh file actually points to the deploy file on the bastion. Not one in the repo.
+  script: ssh -o StrictHostKeyChecking=no $BASTION_USER@$BASTION ./deploy.sh ${REPO} $COMMIT
+  on:
+    branch: master
