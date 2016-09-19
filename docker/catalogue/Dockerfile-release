@@ -17,6 +17,6 @@ LABEL org.label-schema.vendor="Weaveworks" \
   org.label-schema.url="https://github.com/microservices-demo/catalogue" \
   org.label-schema.vcs-url="github.com:microservices-demo/catalogue.git" \
   org.label-schema.vcs-ref="${COMMIT}" \
-  org.label-schema.docker.schema-version="1.0"
+  org.label-schema.schema-version="1.0"
 
 CMD ["/app", "-port=80"]
