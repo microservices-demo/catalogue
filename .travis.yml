@@ -13,7 +13,9 @@ before_install:
   - go get github.com/go-kit/kit/log 
   - go get github.com/go-kit/kit/endpoint 
   - go get github.com/go-kit/kit/transport/http 
-  - go get github.com/go-sql-driver/mysql 
+  - go get github.com/go-kit/kit/metrics/prometheus
+  - go get github.com/prometheus/client_golang/prometheus
+  - go get github.com/go-sql-driver/mysql
   - go get github.com/jmoiron/sqlx
   - go get gopkg.in/DATA-DOG/go-sqlmock.v1
 

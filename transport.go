@@ -12,6 +12,7 @@ import (
 	"github.com/go-kit/kit/log"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"golang.org/x/net/context"
 )
 
@@ -68,6 +69,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 		encodeHealthResponse,
 		options...,
 	))
+	r.Handle("/metrics", promhttp.Handler())
 	return r
 }
 
