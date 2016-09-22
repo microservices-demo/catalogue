@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/metrics"
 )
 
 // Middleware decorates a service.
@@ -77,4 +78,55 @@ func (mw loggingMiddleware) Tags() (tags []string, err error) {
 		)
 	}(time.Now())
 	return mw.next.Tags()
+}
+
+type instrumentingService struct {
+	requestCount   metrics.Counter
+	requestLatency metrics.Histogram
+	Service
+}
+
+// NewInstrumentingService returns an instance of an instrumenting Service.
+func NewInstrumentingService(requestCount metrics.Counter, requestLatency metrics.Histogram, s Service) Service {
+	return &instrumentingService{
+		requestCount:   requestCount,
+		requestLatency: requestLatency,
+		Service:        s,
+	}
+}
+
+func (s *instrumentingService) List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) {
+	defer func(begin time.Time) {
+		s.requestCount.With("method", "list").Add(1)
+		s.requestLatency.With("method", "list").Observe(time.Since(begin).Seconds())
+	}(time.Now())
+
+	return s.Service.List(tags, order, pageNum, pageSize)
+}
+
+func (s *instrumentingService) Count(tags []string) (int, error) {
+	defer func(begin time.Time) {
+		s.requestCount.With("method", "count").Add(1)
+		s.requestLatency.With("method", "count").Observe(time.Since(begin).Seconds())
+	}(time.Now())
+
+	return s.Service.Count(tags)
+}
+
+func (s *instrumentingService) Get(id string) (Sock, error) {
+	defer func(begin time.Time) {
+		s.requestCount.With("method", "get").Add(1)
+		s.requestLatency.With("method", "get").Observe(time.Since(begin).Seconds())
+	}(time.Now())
+
+	return s.Service.Get(id)
+}
+
+func (s *instrumentingService) Tags() ([]string, error) {
+	defer func(begin time.Time) {
+		s.requestCount.With("method", "tags").Add(1)
+		s.requestLatency.With("method", "tags").Observe(time.Since(begin).Seconds())
+	}(time.Now())
+
+	return s.Service.Tags()
 }

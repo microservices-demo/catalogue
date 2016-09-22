@@ -8,6 +8,8 @@ import (
 	"syscall"
 
 	"github.com/go-kit/kit/log"
+	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
+	stdprometheus "github.com/prometheus/client_golang/prometheus"
 
 	"net/http"
 
@@ -60,11 +62,29 @@ func main() {
 		logger.Log("Error", "Unable to connect to Database", "DSN", dsn)
 	}
 
+	fieldKeys := []string{"method"}
 	// Service domain.
 	var service catalogue.Service
 	{
 		service = catalogue.NewCatalogueService(db, logger)
 		service = catalogue.LoggingMiddleware(logger)(service)
+		service = catalogue.NewInstrumentingService(
+			kitprometheus.NewCounterFrom(
+				stdprometheus.CounterOpts{
+					Namespace: "microservices_demo",
+					Subsystem: "catalogue",
+					Name:      "request_count",
+					Help:      "Number of requests received.",
+				},
+				fieldKeys),
+			kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
+				Namespace: "microservices_demo",
+				Subsystem: "catalogue",
+				Name:      "request_latency_microseconds",
+				Help:      "Total duration of requests in microseconds.",
+			}, fieldKeys),
+			service,
+		)
 	}
 
 	// Endpoint domain.
