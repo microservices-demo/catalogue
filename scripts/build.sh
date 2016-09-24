@@ -41,3 +41,10 @@ $DOCKER_CMD build \
   --build-arg COMMIT=$COMMIT \
   -t ${REPO}:${COMMIT} \
   -f $CODE_DIR/docker/catalogue/Dockerfile-release $CODE_DIR/docker/catalogue;
+
+$DOCKER_CMD build \
+  --build-arg BUILD_VERSION=$BUILD_VERSION \
+  --build-arg BUILD_DATE=$BUILD_DATE \
+  --build-arg COMMIT=$COMMIT \
+  -t ${REPO}-db:${COMMIT} \
+  -f $CODE_DIR/docker/catalogue-db/Dockerfile $CODE_DIR/docker/catalogue-db;
