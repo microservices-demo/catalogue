@@ -26,7 +26,7 @@ env:
 
 script:
   - set -e
-  - ./scripts/build.sh;
+  - make dockertravisbuild
   - ./test/test.sh unit.py
  # - ./test/test.sh component.py
   - ./test/test.sh container.py --tag $TAG
