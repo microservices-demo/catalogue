@@ -24,7 +24,6 @@ run:
 	docker run --rm -p 8080:80 --name $(INSTANCE) $(NAME)
 
 dockertravisbuild: build
-	cp -rf bin docker/catalogue/
 	docker build -t $(NAME):$(TAG) -f docker/catalogue/Dockerfile-release docker/catalogue/
 	docker build -t $(DBNAME):$(TAG) -f docker/catalogue-db/Dockerfile docker/catalogue-db/
 	docker login -u $(DOCKER_USER) -p $(DOCKER_PASS)
