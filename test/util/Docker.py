@@ -1,13 +1,34 @@
 import re
 from subprocess import Popen, PIPE
 from random import random
+from time import sleep
 
 # From http://blog.bordage.pro/avoid-docker-py/
+
+
 class Docker:
     def kill_and_remove(self, ctr_name):
         command = ['docker', 'rm', '-f', ctr_name]
-        self.execute(command)
+        try:
+            self.execute(command)
+        except RuntimeError as e:
+            print(e)
+            pass
 
+    def ensure_output(self, container_name, match_string, limit=30):
+        command = ['docker', 'logs', container_name]
+        matched = False
+        while not matched:
+            out = Docker().execute(command)
+            matched = True if match_string in out else False
+            if matched:
+                return True
+            if limit == 0:
+                return False
+            else:
+                sleep(1)
+                limit = limit - 1
+ 
     def random_container_name(self, prefix):
         retstr = prefix + '-'
         for i in range(5):
@@ -21,7 +42,6 @@ class Docker:
         return re.sub(r'[^0-9.]*', '', self.execute(command))
 
     def execute(self, command):
-        print("Running: " + ' '.join(command))
         p = Popen(command, stdout=PIPE, stderr=PIPE)
         out = p.stdout.read()
         stderr = p.stderr.read()
