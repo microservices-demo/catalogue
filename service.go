@@ -6,6 +6,7 @@ package catalogue
 import (
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/jmoiron/sqlx"
@@ -18,6 +19,7 @@ type Service interface {
 	Count(tags []string) (int, error)                                        // GET /catalogue/size
 	Get(id string) (Sock, error)                                             // GET /catalogue/{id}
 	Tags() ([]string, error)                                                 // GET /tags
+	Health() []Health                                                        // GET /health
 }
 
 // Sock describes the thing on offer in the catalogue.
@@ -34,6 +36,13 @@ type Sock struct {
 	TagString   string   `json:"-" db:"tag_name"`
 }
 
+// Health describes the health of a service
+type Health struct {
+	Service string `json:"service"`
+	Status  string `json:"status"`
+	Time    string `json:"time"`
+}
+
 // ErrNotFound is returned when there is no sock for a given ID.
 var ErrNotFound = errors.New("not found")
 
@@ -46,13 +55,13 @@ var baseQuery = "SELECT sock.sock_id AS id, sock.name, sock.description, sock.pr
 // with connection to an SQL database.
 func NewCatalogueService(db *sqlx.DB, logger log.Logger) Service {
 	return &catalogueService{
-		db: db,
+		db:     db,
 		logger: logger,
 	}
 }
 
 type catalogueService struct {
-	db *sqlx.DB
+	db     *sqlx.DB
 	logger log.Logger
 }
 
@@ -146,6 +155,24 @@ func (s *catalogueService) Get(id string) (Sock, error) {
 	sock.Tags = strings.Split(sock.TagString, ",")
 
 	return sock, nil
+}
+
+func (s *catalogueService) Health() []Health {
+	var health []Health
+	dbstatus := "OK"
+
+	err := s.db.Ping()
+	if err != nil {
+		dbstatus = "err"
+	}
+
+	app := Health{"catalogue", "OK", time.Now().String()}
+	db := Health{"catalogue-db", dbstatus, time.Now().String()}
+
+	health = append(health, app)
+	health = append(health, db)
+
+	return health
 }
 
 func (s *catalogueService) Tags() ([]string, error) {

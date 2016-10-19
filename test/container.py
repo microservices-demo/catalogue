@@ -17,13 +17,19 @@ class CatalogueContainerTest(unittest.TestCase):
         self.ip = ""
 
     def setUp(self):
-        Docker().start_container(container_name=self.mysql_container_name, image="mysql", host=self.mysql_container_name, env=[("MYSQL_ROOT_PASSWORD", "abc123"), ("MYSQL_DATABASE", "catalogue")])
+        Docker().start_container(container_name=self.mysql_container_name,
+                image="weaveworksdemos/catalogue-db:" + self.TAG,
+                host=self.mysql_container_name,
+                env=[("MYSQL_ROOT_PASSWORD", ""),
+                    ("MYSQL_ALLOW_EMPTY_PASSWORD", True),
+                    ("MYSQL_DATABASE", "socksdb")]
+                )
         # todo: a better way to ensure mysql is up
-        sleep(15)
+        sleep(30)
         command = ['docker', 'run',
                    '-d',
                    '--name', CatalogueContainerTest.container_name,
-                   '--link', "{}:mysql".format(self.mysql_container_name),
+                   '--link', "{}:catalogue-db".format(self.mysql_container_name),
                    '-h', CatalogueContainerTest.container_name,
                    'weaveworksdemos/catalogue:' + self.TAG]
         Docker().execute(command)
