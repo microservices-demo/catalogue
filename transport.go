@@ -28,7 +28,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 	// GET /catalogue/size  Count
 	// GET /catalogue/{id}  Get
 	// GET /tags            Tags
-	// GET /health			Health Check
+	// GET /health		Health Check
 
 	r.Methods("GET").Path("/catalogue").Handler(httptransport.NewServer(
 		ctx,
