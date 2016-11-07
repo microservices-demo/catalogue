@@ -1,15 +1,24 @@
 FROM alpine:3.4
 
-RUN addgroup mygroup && adduser -D -G mygroup myuser
-RUN apk add --update libcap
+ENV	SERVICE_USER=myuser \
+	SERVICE_UID=10001 \
+	SERVICE_GROUP=mygroup \
+	SERVICE_GID=10001
+
+RUN	addgroup -g ${SERVICE_GID} ${SERVICE_GROUP} && \
+	adduser -g "${SERVICE_NAME} user" -D -H -G ${SERVICE_GROUP} -s /sbin/nologin -u ${SERVICE_UID} ${SERVICE_USER} && \
+	apk add --update libcap
 
 WORKDIR /
 EXPOSE 80
 COPY app /
 COPY images/ /images/
 
-RUN setcap 'cap_net_bind_service=+ep' /app
-USER myuser
+RUN	chmod +x /app && \
+	chown -R ${SERVICE_USER}:${SERVICE_GROUP} /app /images && \
+	setcap 'cap_net_bind_service=+ep' /app
+
+USER ${SERVICE_USER}
 
 ARG BUILD_DATE
 ARG BUILD_VERSION
