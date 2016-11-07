@@ -1,9 +1,15 @@
-FROM busybox:1
+FROM alpine:3.4
+
+RUN addgroup mygroup && adduser -D -G mygroup myuser
+RUN apk add --update libcap
 
 WORKDIR /
 EXPOSE 80
 COPY app /
 COPY images/ /images/
+
+RUN setcap 'cap_net_bind_service=+ep' /app
+USER myuser
 
 ARG BUILD_DATE
 ARG BUILD_VERSION
