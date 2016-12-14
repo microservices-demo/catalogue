@@ -10,9 +10,32 @@ This service is built, tested and released by travis.
 We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions.
 
 ### To build this service
+
+#### Go tools
+In order to build the project locally you need to make sure that the repository directory is located in the correct
+$GOPATH directory: $GOPATH/src/github.com/microservices-demo/catalogue/. Once that is in place you can build by running:
+
+```
+cd $GOPATH/src/github.com/microservices-demo/catalogue/cmd/cataloguesvc/
+go build -o catalogue
+```
+
+The result is a binary named `catalogue`, in the current directory.
+
+#### Docker
 `docker-compose build`
 
 ### To run the service on port 8080
+
+#### Go native
+
+If you followed to Go build instructions, you should have a "catalogue" binary in $GOPATH/src/github.com/microservices-demo/catalogue/cmd/cataloguesvc/.
+To run it use:
+```
+./catalogue
+```
+
+#### Docker
 `docker-compose up`
 
 ### Run tests before submitting PRs
