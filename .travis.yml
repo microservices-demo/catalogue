@@ -7,17 +7,9 @@ go:
 before_install:
   - openssl aes-256-cbc -K $encrypted_790acdb9ad25_key -iv $encrypted_790acdb9ad25_iv
     -in catalogue_deploy_rsa.enc -out catalogue_deploy_rsa -d
-  - go get golang.org/x/tools/cmd/cover
-  - go get github.com/mattn/goveralls
-  - go get github.com/gorilla/mux 
-  - go get github.com/go-kit/kit/log 
-  - go get github.com/go-kit/kit/endpoint 
-  - go get github.com/go-kit/kit/transport/http 
-  - go get github.com/go-kit/kit/metrics/prometheus
-  - go get github.com/prometheus/client_golang/prometheus
-  - go get github.com/go-sql-driver/mysql
-  - go get github.com/jmoiron/sqlx
-  - go get gopkg.in/DATA-DOG/go-sqlmock.v1
+  - go get -u github.com/FiloSottile/gvt
+  - gvt restore
+  - go get -u github.com/mattn/goveralls
 
 install: true
 
@@ -33,13 +25,13 @@ script:
 
 after_success:
   - set -e;
-  # - $HOME/gopath/bin/goveralls -service=travis-ci
   - if [ -z "$DOCKER_PASS" ] ; then
       echo "This is a build triggered by an external PR. Skipping docker push.";
       exit 0;
     fi;
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS;
   - ./scripts/push.sh
+  - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci
 
 before_deploy:
   - eval "$(ssh-agent -s)"

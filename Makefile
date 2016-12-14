@@ -5,12 +5,9 @@ TAG=$(TRAVIS_COMMIT)
 
 INSTANCE = catalogue
 
-.PHONY: default build copy
+.PHONY: default copy test
 
-default: build
-
-build:
-	docker build -t $(NAME)-dev -f ./docker/catalogue/Dockerfile .
+default: test
 
 copy:
 	docker create --name $(INSTANCE) $(NAME)-dev
@@ -20,8 +17,10 @@ copy:
 release:
 	docker build -t $(NAME) -f ./docker/catalogue/Dockerfile-release .
 
-run:
-	docker run --rm -p 8080:80 --name $(INSTANCE) $(NAME)
+test: 
+	GROUP=weaveworksdemos COMMIT=test ./scripts/build.sh
+	./test/test.sh unit.py
+	./test/test.sh container.py --tag $(TAG)
 
 dockertravisbuild: build
 	docker build -t $(NAME):$(TAG) -f docker/catalogue/Dockerfile-release docker/catalogue/
