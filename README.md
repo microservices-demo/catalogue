@@ -13,6 +13,12 @@ We'd love to see community contributions. We like to keep it simple and use Gith
 
 ### To build this service
 
+#### Dependencies
+```
+go get -u github.com/FiloSottile/gvt
+gvt restore
+```
+
 #### Go tools
 In order to build the project locally you need to make sure that the repository directory is located in the correct
 $GOPATH directory: $GOPATH/src/github.com/microservices-demo/catalogue/. Once that is in place you can build by running:
@@ -41,8 +47,6 @@ To run it use:
 `docker-compose up`
 
 ### Run tests before submitting PRs
-`go get -u github.com/FiloSottile/gvt`  
-`gvt restore`  
 `make test`
 
 ### Check whether the service is alive
