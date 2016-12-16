@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/microservices-demo/catalogue.svg?branch=master)](https://travis-ci.org/microservices-demo/catalogue) 
 [![Coverage Status](https://coveralls.io/repos/github/microservices-demo/catalogue/badge.svg?branch=master)](https://coveralls.io/github/microservices-demo/catalogue?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/microservices-demo/catalogue)](https://goreportcard.com/report/github.com/microservices-demo/catalogue)
+[![Microbadger](https://images.microbadger.com/badges/image/weaveworksdemos/catalogue.svg)](http://microbadger.com/images/weaveworksdemos/catalogue "Get your own image badge on microbadger.com")
+
 
 # Catalogue
 A microservices-demo service that provides catalogue/product information. 
@@ -10,6 +12,12 @@ This service is built, tested and released by travis.
 We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions.
 
 ### To build this service
+
+#### Dependencies
+```
+go get -u github.com/FiloSottile/gvt
+gvt restore
+```
 
 #### Go tools
 In order to build the project locally you need to make sure that the repository directory is located in the correct
@@ -39,8 +47,6 @@ To run it use:
 `docker-compose up`
 
 ### Run tests before submitting PRs
-`go get -u github.com/FiloSottile/gvt`  
-`gvt restore`  
 `make test`
 
 ### Check whether the service is alive
