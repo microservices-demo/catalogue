@@ -46,3 +46,6 @@ deploy:
   script: ssh -o StrictHostKeyChecking=no $BASTION_USER@$BASTION ./deploy.sh ${REPO} $COMMIT
   on:
     branch: master
+notifications:
+  slack:
+    secure: uwlcWCyyEW0xssAi6pNIzMtw5r5Zak07+b34sR8uiyCnxrFHPypa7/spV0dn7KHDjcDM+A5J+fCQQ2nvQ0EoDOoGndaDmtOYpgDSG17DdXB1uk3P3dADyuhLMFl9U7TYpxGVDvCoEPx9r2s/1ACEWq8QWpxt7oDVTWNCcMiO/XUoQgHoP7mu573xAOK2OE2cu62R412ycz0TNY295SOsTPoze+cfVCfg+RfQoo9l0UDZK2OClYS6DNFoyG2OGhh4mVB8tjzmzwRDbgrNXrBU5HuP2h9Nk04u8284wuBVg0C4oTiRIzpDTNmowdq0T24uE/RZMwNIgnYt1d+djzlGPB97lGTIFQvQKP9u/D7JtWnjpHvrKbn2TC/dJTF5nCiai4D8WKwDc4Kl/a0ALJiUM2NUd3vmK0O1sWwu4UqMEbMB3Vj9Gq2UylnS1k2TaNmkI4hfLCL3brqTMicULLubIfA5HZSEegvAwly/kPQpfi6AJ7/vedWLnCGr3VnuWwMAYntru/3fKbYBMUJMEkT9XqQiblqsArjUDz8l2CyhVT34q/ZIiYR83EAX6mDkk2mBgp7DiT3VKMQ1dyGtLa1AjtbUphWRNyOM/j2ZX9aTBozNV7iAvDDujMQurTmjZshO/WO5qSOs4F57lYSQpu26Wx5vyPa4oY2chsZLK+rVdDU=
