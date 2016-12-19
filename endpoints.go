@@ -35,7 +35,7 @@ func MakeListEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(listRequest)
 		socks, err := s.List(req.Tags, req.Order, req.PageNum, req.PageSize)
-		return listResponse{Socks: socks, Err: err}, nil
+		return listResponse{Socks: socks, Err: err}, err
 	}
 }
 
@@ -44,7 +44,7 @@ func MakeCountEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(countRequest)
 		n, err := s.Count(req.Tags)
-		return countResponse{N: n, Err: err}, nil
+		return countResponse{N: n, Err: err}, err
 	}
 }
 
@@ -53,7 +53,7 @@ func MakeGetEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(getRequest)
 		sock, err := s.Get(req.ID)
-		return getResponse{Sock: sock, Err: err}, nil
+		return getResponse{Sock: sock, Err: err}, err
 	}
 }
 
@@ -61,7 +61,7 @@ func MakeGetEndpoint(s Service) endpoint.Endpoint {
 func MakeTagsEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		tags, err := s.Tags()
-		return tagsResponse{Tags: tags, Err: err}, nil
+		return tagsResponse{Tags: tags, Err: err}, err
 	}
 }
 
