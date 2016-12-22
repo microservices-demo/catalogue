@@ -7,8 +7,8 @@ go:
 before_install:
   - openssl aes-256-cbc -K $encrypted_790acdb9ad25_key -iv $encrypted_790acdb9ad25_iv
     -in catalogue_deploy_rsa.enc -out catalogue_deploy_rsa -d
-  - go get -u github.com/FiloSottile/gvt
-  - gvt restore
+  - go get -v github.com/Masterminds/glide
+  - glide install
   - go get -u github.com/mattn/goveralls
 
 install: true

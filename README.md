@@ -15,8 +15,8 @@ We'd love to see community contributions. We like to keep it simple and use Gith
 
 #### Dependencies
 ```
-go get -u github.com/FiloSottile/gvt
-gvt restore
+go get -v github.com/Masterminds/glide
+glide install
 ```
 
 #### Go tools
