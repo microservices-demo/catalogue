@@ -2,11 +2,28 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/Shopify/sarama",
+			"repository": "https://github.com/Shopify/sarama",
+			"vcs": "git",
+			"revision": "0fb560e5f7fbcaee2f75e3c34174320709f69944",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/VividCortex/gohistogram",
 			"repository": "https://github.com/VividCortex/gohistogram",
 			"vcs": "git",
 			"revision": "51564d9861991fb0ad0f531c99ef602d0f9866e6",
 			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/apache/thrift/lib/go/thrift",
+			"repository": "https://github.com/apache/thrift",
+			"vcs": "git",
+			"revision": "30a8b65dcec88d0710143ca2b94f71915a8549c5",
+			"branch": "master",
+			"path": "/lib/go/thrift",
 			"notests": true
 		},
 		{
@@ -35,6 +52,40 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/davecgh/go-spew/spew",
+			"repository": "https://github.com/davecgh/go-spew",
+			"vcs": "git",
+			"revision": "346938d642f2ec3594ed81d874461961cd0faa76",
+			"branch": "master",
+			"path": "/spew",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/eapache/go-resiliency/breaker",
+			"repository": "https://github.com/eapache/go-resiliency",
+			"vcs": "git",
+			"revision": "b86b1ec0dd4209a588dc1285cdd471e73525c0b3",
+			"branch": "master",
+			"path": "/breaker",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/eapache/go-xerial-snappy",
+			"repository": "https://github.com/eapache/go-xerial-snappy",
+			"vcs": "git",
+			"revision": "bb955e01b9346ac19dc29eb16586c90ded99a98c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/eapache/queue",
+			"repository": "https://github.com/eapache/queue",
+			"vcs": "git",
+			"revision": "44cc805cf13205b55f69e14bcb69867d1ae92f98",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/go-kit/kit/endpoint",
 			"repository": "https://github.com/go-kit/kit",
 			"vcs": "git",
@@ -59,6 +110,15 @@
 			"revision": "32262326a664255a27b9cbac1741bc54f4c2e49e",
 			"branch": "master",
 			"path": "metrics",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/go-kit/kit/tracing/opentracing",
+			"repository": "https://github.com/go-kit/kit",
+			"vcs": "git",
+			"revision": "905b60253dbac4a14625ce52217ede00d3a3aca7",
+			"branch": "master",
+			"path": "/tracing/opentracing",
 			"notests": true
 		},
 		{
@@ -104,6 +164,33 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/gogo/protobuf/proto",
+			"repository": "https://github.com/gogo/protobuf",
+			"vcs": "git",
+			"revision": "84af2615df1ba1d35cc975ba94b64ee67d6c196e",
+			"branch": "master",
+			"path": "/proto",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/gogo/protobuf/sortkeys",
+			"repository": "https://github.com/gogo/protobuf",
+			"vcs": "git",
+			"revision": "84af2615df1ba1d35cc975ba94b64ee67d6c196e",
+			"branch": "master",
+			"path": "sortkeys",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/gogo/protobuf/types",
+			"repository": "https://github.com/gogo/protobuf",
+			"vcs": "git",
+			"revision": "84af2615df1ba1d35cc975ba94b64ee67d6c196e",
+			"branch": "master",
+			"path": "types",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/golang/protobuf/proto",
 			"repository": "https://github.com/golang/protobuf",
 			"vcs": "git",
@@ -119,6 +206,14 @@
 			"revision": "8ee79997227bf9b34611aee7946ae64735e6fd93",
 			"branch": "master",
 			"path": "ptypes/any",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/golang/snappy",
+			"repository": "https://github.com/golang/snappy",
+			"vcs": "git",
+			"revision": "d9eb7a3d35ec988b8585d4a0068e462c27d28380",
+			"branch": "master",
 			"notests": true
 		},
 		{
@@ -197,6 +292,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/klauspost/crc32",
+			"repository": "https://github.com/klauspost/crc32",
+			"vcs": "git",
+			"revision": "cb6bfca970f6908083f26f39a79009d608efd5cd",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/kr/logfmt",
 			"repository": "https://github.com/kr/logfmt",
 			"vcs": "git",
@@ -214,6 +317,22 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/opentracing/opentracing-go",
+			"repository": "https://github.com/opentracing/opentracing-go",
+			"vcs": "git",
+			"revision": "ac5446f53f2c0fc68dc16dc5f426eae1cd288b34",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/openzipkin/zipkin-go-opentracing",
+			"repository": "https://github.com/openzipkin/zipkin-go-opentracing",
+			"vcs": "git",
+			"revision": "594640b9ef7e5c994e8d9499359d693c032d738c",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/pborman/uuid",
 			"repository": "https://github.com/pborman/uuid",
 			"vcs": "git",
@@ -227,6 +346,23 @@
 			"vcs": "git",
 			"revision": "6c862057c50f0d597c08fd8c58cf88376bb243f3",
 			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/pierrec/lz4",
+			"repository": "https://github.com/pierrec/lz4",
+			"vcs": "git",
+			"revision": "5c9560bfa9ace2bf86080bf40d46b34ae44604df",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/pierrec/xxHash/xxHash32",
+			"repository": "https://github.com/pierrec/xxHash",
+			"vcs": "git",
+			"revision": "5a004441f897722c627870a981d02b29924215fa",
+			"branch": "master",
+			"path": "/xxHash32",
 			"notests": true
 		},
 		{
@@ -283,12 +419,46 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/rcrowley/go-metrics",
+			"repository": "https://github.com/rcrowley/go-metrics",
+			"vcs": "git",
+			"revision": "1f30fe9094a513ce4c700b9a54458bbb0c96996c",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/stathat/go",
+			"repository": "https://github.com/stathat/go",
+			"vcs": "git",
+			"revision": "74669b9f388d9d788c97399a0824adbfee78400e",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "golang.org/x/net/context",
 			"repository": "https://go.googlesource.com/net",
 			"vcs": "git",
 			"revision": "cfae461cedfdcab6e261a26eb77db53695623303",
 			"branch": "master",
 			"path": "/context",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/net/internal/timeseries",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "45e771701b814666a7eb299e6c7a57d0b1799e91",
+			"branch": "master",
+			"path": "internal/timeseries",
+			"notests": true
+		},
+		{
+			"importpath": "golang.org/x/net/trace",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "45e771701b814666a7eb299e6c7a57d0b1799e91",
+			"branch": "master",
+			"path": "/trace",
 			"notests": true
 		},
 		{
@@ -307,6 +477,15 @@
 			"revision": "ae0208420024a4690a48068625e8fe111e8cb448",
 			"branch": "master",
 			"path": "cover",
+			"notests": true
+		},
+		{
+			"importpath": "google.golang.org/grpc/metadata",
+			"repository": "https://github.com/grpc/grpc-go",
+			"vcs": "git",
+			"revision": "9d682f9293b408c42d17c587d0e2a31237ac3f10",
+			"branch": "master",
+			"path": "/metadata",
 			"notests": true
 		},
 		{
