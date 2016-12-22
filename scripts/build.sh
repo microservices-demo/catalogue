@@ -28,7 +28,7 @@ echo $CODE_DIR
 cp -r $CODE_DIR/images/ $CODE_DIR/docker/catalogue/images/
 cp -r $CODE_DIR/cmd/ $CODE_DIR/docker/catalogue/cmd/
 cp $CODE_DIR/*.go $CODE_DIR/docker/catalogue/
-mkdir -p $CODE_DIR/docker/catalogue/vendor && cp $CODE_DIR/vendor/manifest $CODE_DIR/docker/catalogue/vendor/
+mkdir -p $CODE_DIR/docker/catalogue/vendor && cp $CODE_DIR/docker/catalogue/vendor/
 
 REPO=${GROUP}/$(basename catalogue);
 
