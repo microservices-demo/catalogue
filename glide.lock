@@ -1,0 +1,121 @@
+hash: db948d040d989af9220ab54addee0a87d95d3d157f09497bcb18b4cdacce1031
+updated: 2016-12-22T16:11:49.604337991+01:00
+imports:
+- name: github.com/beorn7/perks
+  version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
+  repo: https://github.com/beorn7/perks
+  subpackages:
+  - quantile
+- name: github.com/circonus-labs/circonus-gometrics
+  version: 4d93a8f79cb1e34a38f99dd13e64e8bfd3df1c72
+  repo: https://github.com/circonus-labs/circonus-gometrics
+- name: github.com/circonus-labs/circonusllhist
+  version: 7d649b46cdc2cd2ed102d350688a75a4fd7778c6
+  repo: https://github.com/circonus-labs/circonusllhist
+- name: github.com/go-kit/kit
+  version: 32262326a664255a27b9cbac1741bc54f4c2e49e
+  repo: https://github.com/go-kit/kit
+  subpackages:
+  - endpoint
+  - log
+  - metrics
+  - metrics/internal/lv
+  - metrics/prometheus
+  - transport/http
+  - util/conn
+- name: github.com/go-logfmt/logfmt
+  version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
+  repo: https://github.com/go-logfmt/logfmt
+- name: github.com/go-sql-driver/mysql
+  version: a0583e0143b1624142adab07e0e97fe106d99561
+  repo: https://github.com/go-sql-driver/mysql
+- name: github.com/go-stack/stack
+  version: 100eb0c0a9c5b306ca2fb4f165df21d80ada4b82
+  repo: https://github.com/go-stack/stack
+- name: github.com/golang/protobuf
+  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
+  repo: https://github.com/golang/protobuf
+  subpackages:
+  - proto
+  - ptypes/any
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+  repo: https://github.com/gorilla/context
+- name: github.com/gorilla/mux
+  version: 757bef944d0f21880861c2dd9c871ca543023cba
+  repo: https://github.com/gorilla/mux
+- name: github.com/hashicorp/go-cleanhttp
+  version: ad28ea4487f05916463e2423a55166280e8254b5
+  repo: https://github.com/hashicorp/go-cleanhttp
+- name: github.com/hashicorp/go-retryablehttp
+  version: 6e85be8fee1dcaa02c0eaaac2df5a8fbecf94145
+  repo: https://github.com/hashicorp/go-retryablehttp
+- name: github.com/influxdata/influxdb
+  version: 855c567c67d7fff1e2f91617c292ea20cf26e53c
+  repo: https://github.com/influxdata/influxdb
+  subpackages:
+  - client/v2
+  - models
+  - pkg/escape
+- name: github.com/jmoiron/sqlx
+  version: cac998c4f0959c19c638c523e374fa8e4e0bcfe3
+  repo: https://github.com/jmoiron/sqlx
+  subpackages:
+  - reflectx
+- name: github.com/kisielk/sqlstruct
+  version: 648daed35d49dac24a4bff253b190a80da3ab6a5
+  repo: https://github.com/kisielk/sqlstruct
+- name: github.com/kr/logfmt
+  version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
+  repo: https://github.com/kr/logfmt
+- name: github.com/matttproud/golang_protobuf_extensions
+  version: c12348ce28de40eed0136aa2b644d0ee0650e56c
+  repo: https://github.com/matttproud/golang_protobuf_extensions
+  subpackages:
+  - pbutil
+- name: github.com/pborman/uuid
+  version: 5007efa264d92316c43112bc573e754bc889b7b1
+  repo: https://github.com/pborman/uuid
+- name: github.com/performancecopilot/speed
+  version: 6c862057c50f0d597c08fd8c58cf88376bb243f3
+  repo: https://github.com/performancecopilot/speed
+- name: github.com/prometheus/client_golang
+  version: 575f371f7862609249a1be4c9145f429fe065e32
+  repo: https://github.com/prometheus/client_golang
+  subpackages:
+  - prometheus
+  - prometheus/promhttp
+- name: github.com/prometheus/client_model
+  version: fa8ad6fec33561be4280a8f0514318c79d7f6cb6
+  repo: https://github.com/prometheus/client_model
+  subpackages:
+  - go
+- name: github.com/prometheus/common
+  version: 195bde7883f7c39ea62b0d92ab7359b5327065cb
+  repo: https://github.com/prometheus/common
+  subpackages:
+  - expfmt
+  - internal/bitbucket.org/ww/goautoneg
+  - model
+- name: github.com/prometheus/procfs
+  version: fcdb11ccb4389efb1b210b7ffb623ab71c5fdd60
+  repo: https://github.com/prometheus/procfs
+- name: github.com/VividCortex/gohistogram
+  version: 51564d9861991fb0ad0f531c99ef602d0f9866e6
+  repo: https://github.com/VividCortex/gohistogram
+- name: golang.org/x/net
+  version: cfae461cedfdcab6e261a26eb77db53695623303
+  repo: https://go.googlesource.com/net
+  subpackages:
+  - context
+  - context/ctxhttp
+- name: golang.org/x/tools
+  version: ae0208420024a4690a48068625e8fe111e8cb448
+  repo: https://go.googlesource.com/tools
+  subpackages:
+  - cmd/cover
+  - cover
+- name: gopkg.in/DATA-DOG/go-sqlmock.v1
+  version: d4cd2ca2ad1cc2130bba385aab072218f131f636
+  repo: https://gopkg.in/DATA-DOG/go-sqlmock.v1
+testImports: []
