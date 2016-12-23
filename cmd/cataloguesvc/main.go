@@ -9,15 +9,22 @@ import (
 
 	"github.com/go-kit/kit/log"
 	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
+	stdopentracing "github.com/opentracing/opentracing-go"
+	zipkin "github.com/openzipkin/zipkin-go-opentracing"
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
 
 	"net/http"
+
+	"path/filepath"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/microservices-demo/catalogue"
 	"golang.org/x/net/context"
-	"path/filepath"
+)
+
+const (
+	ServiceName = "catalogue"
 )
 
 func main() {
@@ -25,6 +32,7 @@ func main() {
 		port   = flag.String("port", "8081", "Port to bind HTTP listener") // TODO(pb): should be -addr, default ":8081"
 		images = flag.String("images", "./images/", "Image path")
 		dsn    = flag.String("DSN", "catalogue_user:default_password@tcp(catalogue-db:3306)/socksdb", "Data Source Name: [username[:password]@][protocol[(address)]]/dbname")
+		zip    = flag.String("zipkin", os.Getenv("ZIPKIN"), "Zipkin address")
 	)
 	flag.Parse()
 
@@ -46,6 +54,32 @@ func main() {
 		logger = log.NewLogfmtLogger(os.Stderr)
 		logger = log.NewContext(logger).With("ts", log.DefaultTimestampUTC)
 		logger = log.NewContext(logger).With("caller", log.DefaultCaller)
+	}
+
+	var tracer stdopentracing.Tracer
+	{
+		if *zip == "" {
+			tracer = stdopentracing.NoopTracer{}
+		} else {
+			logger := log.NewContext(logger).With("tracer", "Zipkin")
+			logger.Log("addr", zip)
+			collector, err := zipkin.NewHTTPCollector(
+				*zip,
+				zipkin.HTTPLogger(logger),
+			)
+			if err != nil {
+				logger.Log("err", err)
+				os.Exit(1)
+			}
+			tracer, err = zipkin.NewTracer(
+				zipkin.NewRecorder(collector, false, fmt.Sprintf("localhost:%v", port), ServiceName),
+			)
+			if err != nil {
+				logger.Log("err", err)
+				os.Exit(1)
+			}
+		}
+		stdopentracing.InitGlobalTracer(tracer)
 	}
 
 	// Data domain.
@@ -88,12 +122,12 @@ func main() {
 	}
 
 	// Endpoint domain.
-	endpoints := catalogue.MakeEndpoints(service)
+	endpoints := catalogue.MakeEndpoints(service, tracer)
 
 	// Create and launch the HTTP server.
 	go func() {
 		logger.Log("transport", "HTTP", "port", *port)
-		handler := catalogue.MakeHTTPHandler(ctx, endpoints, *images, logger)
+		handler := catalogue.MakeHTTPHandler(ctx, endpoints, *images, logger, tracer)
 		errc <- http.ListenAndServe(":"+*port, handler)
 	}()
 

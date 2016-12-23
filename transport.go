@@ -10,14 +10,16 @@ import (
 	"strings"
 
 	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/tracing/opentracing"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
+	stdopentracing "github.com/opentracing/opentracing-go"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"golang.org/x/net/context"
 )
 
 // MakeHTTPHandler mounts the endpoints into a REST-y HTTP handler.
-func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger log.Logger) http.Handler {
+func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger log.Logger, tracer stdopentracing.Tracer) http.Handler {
 	r := mux.NewRouter().StrictSlash(false)
 	options := []httptransport.ServerOption{
 		httptransport.ServerErrorLogger(logger),
@@ -35,28 +37,28 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 		e.ListEndpoint,
 		decodeListRequest,
 		encodeListResponse,
-		options...,
+		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /catalogue", logger)))...,
 	))
 	r.Methods("GET").Path("/catalogue/size").Handler(httptransport.NewServer(
 		ctx,
 		e.CountEndpoint,
 		decodeCountRequest,
 		encodeResponse,
-		options...,
+		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /catalogue/size", logger)))...,
 	))
 	r.Methods("GET").Path("/catalogue/{id}").Handler(httptransport.NewServer(
 		ctx,
 		e.GetEndpoint,
 		decodeGetRequest,
 		encodeGetResponse, // special case, this one can have an error
-		options...,
+		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /catalogue/{id}", logger)))...,
 	))
 	r.Methods("GET").Path("/tags").Handler(httptransport.NewServer(
 		ctx,
 		e.TagsEndpoint,
 		decodeTagsRequest,
 		encodeResponse,
-		options...,
+		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /tags", logger)))...,
 	))
 	r.Methods("GET").PathPrefix("/catalogue/images/").Handler(http.StripPrefix(
 		"/catalogue/images/",
@@ -67,7 +69,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 		e.HealthEndpoint,
 		decodeHealthRequest,
 		encodeHealthResponse,
-		options...,
+		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /health", logger)))...,
 	))
 	r.Handle("/metrics", promhttp.Handler())
 	return r
