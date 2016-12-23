@@ -58,13 +58,13 @@ func main() {
 
 	var tracer stdopentracing.Tracer
 	{
-		if zip == "" {
+		if *zip == "" {
 			tracer = stdopentracing.NoopTracer{}
 		} else {
 			logger := log.NewContext(logger).With("tracer", "Zipkin")
 			logger.Log("addr", zip)
 			collector, err := zipkin.NewHTTPCollector(
-				zip,
+				*zip,
 				zipkin.HTTPLogger(logger),
 			)
 			if err != nil {
