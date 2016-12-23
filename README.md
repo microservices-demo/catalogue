@@ -57,3 +57,23 @@ To run it use:
 
 ### Push the service to Docker Container Registry
 `GROUP=weaveworksdemos COMMIT=test ./scripts/push.sh`
+
+## Test Zipkin
+
+To test with Zipkin
+
+```
+docker-compose -f docker-compose-zipkin.yml build
+docker-compose -f docker-compose-zipkin.yml up
+```
+It takes about 10 seconds to seed data
+
+you should see it at:
+[http://localhost:9411/](http://localhost:9411)
+
+be sure to hit the "Find Traces" button.  You may need to reload the page.
+
+when done you can run:
+```
+docker-compose -f docker-compose-zipkin.yml down
+```
