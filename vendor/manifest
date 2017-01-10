@@ -334,6 +334,14 @@
 			"allfiles": true
 		},
 		{
+			"importpath": "github.com/openzipkin/zipkin-go-opentracing.git",
+			"repository": "https://github.com/openzipkin/zipkin-go-opentracing.git",
+			"vcs": "git",
+			"revision": "594640b9ef7e5c994e8d9499359d693c032d738c",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/pborman/uuid",
 			"repository": "https://github.com/pborman/uuid",
 			"vcs": "git",
