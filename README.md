@@ -11,6 +11,12 @@ This service is built, tested and released by travis.
 ## Bugs, Feature Requests and Contributing
 We'd love to see community contributions. We like to keep it simple and use Github issues to track bugs and feature requests and pull requests to manage contributions.
 
+
+### API Spec
+
+Checkout the API Spec [here](http://microservices-demo.github.io/api/index?url=https://raw.githubusercontent.com/microservices-demo/catalogue/master/api-spec/catalogue.json)
+
+
 ### To build this service
 
 #### Dependencies
