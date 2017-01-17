@@ -5,9 +5,12 @@ package catalogue
 // transport.
 
 import (
+	"time"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/circuitbreaker"
 	"github.com/go-kit/kit/tracing/opentracing"
 	stdopentracing "github.com/opentracing/opentracing-go"
+	"github.com/sony/gobreaker"
 	"golang.org/x/net/context"
 )
 
@@ -34,45 +37,60 @@ func MakeEndpoints(s Service, tracer stdopentracing.Tracer) Endpoints {
 
 // MakeListEndpoint returns an endpoint via the given service.
 func MakeListEndpoint(s Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+	return circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
+		Name:   "List",
+		Timeout: 30 * time.Second,
+	}))(func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(listRequest)
 		socks, err := s.List(req.Tags, req.Order, req.PageNum, req.PageSize)
 		return listResponse{Socks: socks, Err: err}, err
-	}
+	})
 }
 
 // MakeCountEndpoint returns an endpoint via the given service.
 func MakeCountEndpoint(s Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+	return circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
+		Name:   "Count",
+		Timeout: 30 * time.Second,
+	}))(func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(countRequest)
 		n, err := s.Count(req.Tags)
 		return countResponse{N: n, Err: err}, err
-	}
+	})
 }
 
 // MakeGetEndpoint returns an endpoint via the given service.
 func MakeGetEndpoint(s Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+	return circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
+		Name:   "Count",
+		Timeout: 30 * time.Second,
+	}))(func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req := request.(getRequest)
 		sock, err := s.Get(req.ID)
 		return getResponse{Sock: sock, Err: err}, err
-	}
+	})
 }
 
 // MakeTagsEndpoint returns an endpoint via the given service.
 func MakeTagsEndpoint(s Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+	return circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
+		Name:   "Tags",
+		Timeout: 30 * time.Second,
+	}))(func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		tags, err := s.Tags()
 		return tagsResponse{Tags: tags, Err: err}, err
-	}
+	})
 }
 
 // MakeHealthEndpoint returns current health of the given service.
 func MakeHealthEndpoint(s Service) endpoint.Endpoint {
-	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+	return circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
+		Name:   "Health",
+		Timeout: 30 * time.Second,
+	}))(func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		health := s.Health()
 		return healthResponse{Health: health}, nil
-	}
+	})
 }
 
 type listRequest struct {
