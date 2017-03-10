@@ -8,10 +8,8 @@ import (
 	"syscall"
 
 	"github.com/go-kit/kit/log"
-	kitprometheus "github.com/go-kit/kit/metrics/prometheus"
 	stdopentracing "github.com/opentracing/opentracing-go"
 	zipkin "github.com/openzipkin/zipkin-go-opentracing"
-	stdprometheus "github.com/prometheus/client_golang/prometheus"
 
 	"net/http"
 
@@ -20,6 +18,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/microservices-demo/catalogue"
+	"github.com/microservices-demo/catalogue/middleware"
 	"golang.org/x/net/context"
 )
 
@@ -96,38 +95,32 @@ func main() {
 		logger.Log("Error", "Unable to connect to Database", "DSN", dsn)
 	}
 
-	fieldKeys := []string{"method"}
 	// Service domain.
 	var service catalogue.Service
 	{
 		service = catalogue.NewCatalogueService(db, logger)
 		service = catalogue.LoggingMiddleware(logger)(service)
-		service = catalogue.NewInstrumentingService(
-			kitprometheus.NewCounterFrom(
-				stdprometheus.CounterOpts{
-					Namespace: "microservices_demo",
-					Subsystem: "catalogue",
-					Name:      "request_count",
-					Help:      "Number of requests received.",
-				},
-				fieldKeys),
-			kitprometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
-				Namespace: "microservices_demo",
-				Subsystem: "catalogue",
-				Name:      "request_latency_microseconds",
-				Help:      "Total duration of requests in microseconds.",
-			}, fieldKeys),
-			service,
-		)
 	}
 
 	// Endpoint domain.
 	endpoints := catalogue.MakeEndpoints(service, tracer)
 
+	// HTTP router
+	router := catalogue.MakeHTTPHandler(ctx, endpoints, *images, logger, tracer)
+
+	httpMiddleware := []middleware.Interface{
+		middleware.Instrument{
+			Duration:     middleware.HTTPLatency,
+			RouteMatcher: router,
+		},
+	}
+
+	// Handler
+	handler := middleware.Merge(httpMiddleware...).Wrap(router)
+
 	// Create and launch the HTTP server.
 	go func() {
 		logger.Log("transport", "HTTP", "port", *port)
-		handler := catalogue.MakeHTTPHandler(ctx, endpoints, *images, logger, tracer)
 		errc <- http.ListenAndServe(":"+*port, handler)
 	}()
 

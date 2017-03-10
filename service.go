@@ -22,6 +22,9 @@ type Service interface {
 	Health() []Health                                                        // GET /health
 }
 
+// Middleware decorates a Service.
+type Middleware func(Service) Service
+
 // Sock describes the thing on offer in the catalogue.
 type Sock struct {
 	ID          string   `json:"id" db:"id"`

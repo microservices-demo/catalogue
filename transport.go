@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-        "time"
+	"time"
 
+	"github.com/go-kit/kit/circuitbreaker"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/tracing/opentracing"
-	"github.com/go-kit/kit/circuitbreaker"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
 	stdopentracing "github.com/opentracing/opentracing-go"
@@ -22,7 +22,7 @@ import (
 )
 
 // MakeHTTPHandler mounts the endpoints into a REST-y HTTP handler.
-func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger log.Logger, tracer stdopentracing.Tracer) http.Handler {
+func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger log.Logger, tracer stdopentracing.Tracer) *mux.Router {
 	r := mux.NewRouter().StrictSlash(false)
 	options := []httptransport.ServerOption{
 		httptransport.ServerErrorLogger(logger),
@@ -38,7 +38,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 	r.Methods("GET").Path("/catalogue").Handler(httptransport.NewServer(
 		ctx,
 		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
-			Name:   "List",
+			Name:    "List",
 			Timeout: 30 * time.Second,
 		}))(e.ListEndpoint),
 		decodeListRequest,
@@ -48,7 +48,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 	r.Methods("GET").Path("/catalogue/size").Handler(httptransport.NewServer(
 		ctx,
 		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
-			Name:   "Count",
+			Name:    "Count",
 			Timeout: 30 * time.Second,
 		}))(e.CountEndpoint),
 		decodeCountRequest,
@@ -58,7 +58,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 	r.Methods("GET").Path("/catalogue/{id}").Handler(httptransport.NewServer(
 		ctx,
 		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
-			Name:   "Get",
+			Name:    "Get",
 			Timeout: 30 * time.Second,
 		}))(e.GetEndpoint),
 		decodeGetRequest,
@@ -68,7 +68,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 	r.Methods("GET").Path("/tags").Handler(httptransport.NewServer(
 		ctx,
 		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
-			Name:   "Tags",
+			Name:    "Tags",
 			Timeout: 30 * time.Second,
 		}))(e.TagsEndpoint),
 		decodeTagsRequest,
@@ -82,7 +82,7 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 	r.Methods("GET").PathPrefix("/health").Handler(httptransport.NewServer(
 		ctx,
 		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
-			Name:   "Health",
+			Name:    "Health",
 			Timeout: 30 * time.Second,
 		}))(e.HealthEndpoint),
 		decodeHealthRequest,
