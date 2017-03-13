@@ -112,6 +112,7 @@ func main() {
 		middleware.Instrument{
 			Duration:     middleware.HTTPLatency,
 			RouteMatcher: router,
+			Service:      ServiceName,
 		},
 	}
 
