@@ -17,7 +17,7 @@ var (
 		Name:    "request_duration_seconds",
 		Help:    "Time (in seconds) spent serving HTTP requests.",
 		Buckets: prometheus.DefBuckets,
-	}, []string{"method", "route", "status_code"})
+	}, []string{"service", "method", "route", "status_code"})
 )
 
 func init() {
@@ -33,6 +33,7 @@ type RouteMatcher interface {
 type Instrument struct {
 	RouteMatcher RouteMatcher
 	Duration     *prometheus.HistogramVec
+	Service      string
 }
 
 // Wrap implements middleware.Interface
@@ -45,7 +46,7 @@ func (i Instrument) Wrap(next http.Handler) http.Handler {
 			status = strconv.Itoa(interceptor.Code)
 			took   = time.Since(begin)
 		)
-		i.Duration.WithLabelValues(r.Method, route, status).Observe(took.Seconds())
+		i.Duration.WithLabelValues(i.Service, r.Method, route, status).Observe(took.Seconds())
 	})
 }
 
