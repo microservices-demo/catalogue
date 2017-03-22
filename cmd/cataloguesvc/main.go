@@ -18,13 +18,26 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/microservices-demo/catalogue"
-	"github.com/microservices-demo/catalogue/middleware"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/weaveworks/common/middleware"
 	"golang.org/x/net/context"
 )
 
 const (
 	ServiceName = "catalogue"
 )
+
+var (
+	HTTPLatency = prometheus.NewHistogramVec(prometheus.HistogramOpts{
+		Name:    "request_duration_seconds",
+		Help:    "Time (in seconds) spent serving HTTP requests.",
+		Buckets: prometheus.DefBuckets,
+	}, []string{"service", "method", "route", "status_code"})
+)
+
+func init() {
+	prometheus.MustRegister(HTTPLatency)
+}
 
 func main() {
 	var (
@@ -110,9 +123,8 @@ func main() {
 
 	httpMiddleware := []middleware.Interface{
 		middleware.Instrument{
-			Duration:     middleware.HTTPLatency,
+			Duration:     HTTPLatency,
 			RouteMatcher: router,
-			Service:      ServiceName,
 		},
 	}
 
