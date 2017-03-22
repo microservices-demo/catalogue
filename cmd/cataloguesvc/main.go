@@ -32,7 +32,7 @@ var (
 		Name:    "request_duration_seconds",
 		Help:    "Time (in seconds) spent serving HTTP requests.",
 		Buckets: prometheus.DefBuckets,
-	}, []string{"service", "method", "route", "status_code"})
+	}, []string{"method", "route", "status_code", "isWS"})
 )
 
 func init() {
