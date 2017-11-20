@@ -103,7 +103,9 @@ func (s *catalogueService) List(tags []string, order string, pageNum, pageSize i
 		socks[i].Tags = strings.Split(s.TagString, ",")
 	}
 
-	time.Sleep(8500 * time.Millisecond)
+	// DEMO: Change 0 to 850
+	time.Sleep(0 * time.Millisecond)
+
 	socks = cut(socks, pageNum, pageSize)
 
 	return socks, nil
