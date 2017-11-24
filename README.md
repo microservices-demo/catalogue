@@ -83,16 +83,3 @@ when done you can run:
 ```
 docker-compose -f docker-compose-zipkin.yml down
 ```
-
-## Weave Cloud demo notes
-
-### Using pre-built images
-
-Go to WC instance: https://cloud.weave.works/fluxv2/little-meadow-46/services/sock-shop%3Adeployment%2Fcatalogue
-
-Find `master-df67c67b-slow` on the list of recent tags and release it, an alert should fire shortly. To revert, release `master-9de2c86e-normal` tag.
-
-### Making a code change
-
-Edit [`service.go:107`](https://github.com/microservices-demo/catalogue/blob/master/service.go#L106-L107) and commit. One this change is in master branch,
-Travis CI will pick it up and build an image which WC should deploy (if automation is on).
