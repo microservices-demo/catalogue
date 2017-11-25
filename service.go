@@ -4,21 +4,21 @@ package catalogue
 // catalogue service. Everything here is agnostic to the transport (HTTP).
 
 import (
+	"context"
 	"errors"
 	"strings"
 	"time"
 
 	"github.com/go-kit/kit/log"
-	"github.com/jmoiron/sqlx"
 )
 
 // Service is the catalogue service, providing read operations on a saleable
 // catalogue of sock products.
 type Service interface {
-	List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) // GET /catalogue
-	Count(tags []string) (int, error)                                        // GET /catalogue/size
-	Get(id string) (Sock, error)                                             // GET /catalogue/{id}
-	Tags() ([]string, error)                                                 // GET /tags
+	List(ctx context.Context, tags []string, order string, pageNum, pageSize int) ([]Sock, error) // GET /catalogue
+	Count(ctx context.Context, tags []string) (int, error)                                        // GET /catalogue/size
+	Get(ctx context.Context, id string) (Sock, error)                                             // GET /catalogue/{id}
+	Tags(ctx context.Context) ([]string, error)                                                 // GET /tags
 	Health() []Health                                                        // GET /health
 }
 
@@ -56,7 +56,7 @@ var baseQuery = "SELECT sock.sock_id AS id, sock.name, sock.description, sock.pr
 
 // NewCatalogueService returns an implementation of the Service interface,
 // with connection to an SQL database.
-func NewCatalogueService(db *sqlx.DB, logger log.Logger) Service {
+func NewCatalogueService(db Database, logger log.Logger) Service {
 	return &catalogueService{
 		db:     db,
 		logger: logger,
@@ -64,11 +64,11 @@ func NewCatalogueService(db *sqlx.DB, logger log.Logger) Service {
 }
 
 type catalogueService struct {
-	db     *sqlx.DB
+	db     Database
 	logger log.Logger
 }
 
-func (s *catalogueService) List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) {
+func (s *catalogueService) List(ctx context.Context, tags []string, order string, pageNum, pageSize int) ([]Sock, error) {
 	var socks []Sock
 	query := baseQuery
 
@@ -93,7 +93,7 @@ func (s *catalogueService) List(tags []string, order string, pageNum, pageSize i
 
 	query += ";"
 
-	err := s.db.Select(&socks, query, args...)
+	err := s.db.Select(ctx, &socks, query, args...)
 	if err != nil {
 		s.logger.Log("database error", err)
 		return []Sock{}, ErrDBConnection
@@ -111,7 +111,7 @@ func (s *catalogueService) List(tags []string, order string, pageNum, pageSize i
 	return socks, nil
 }
 
-func (s *catalogueService) Count(tags []string) (int, error) {
+func (s *catalogueService) Count(ctx context.Context, tags []string) (int, error) {
 	query := "SELECT COUNT(DISTINCT sock.sock_id) FROM sock JOIN sock_tag ON sock.sock_id=sock_tag.sock_id JOIN tag ON sock_tag.tag_id=tag.tag_id"
 
 	var args []interface{}
@@ -137,7 +137,7 @@ func (s *catalogueService) Count(tags []string) (int, error) {
 	defer sel.Close()
 
 	var count int
-	err = sel.QueryRow(args...).Scan(&count)
+	err = sel.QueryRow(ctx, args...).Scan(&count)
 
 	if err != nil {
 		s.logger.Log("database error", err)
@@ -147,11 +147,11 @@ func (s *catalogueService) Count(tags []string) (int, error) {
 	return count, nil
 }
 
-func (s *catalogueService) Get(id string) (Sock, error) {
+func (s *catalogueService) Get(ctx context.Context, id string) (Sock, error) {
 	query := baseQuery + " WHERE sock.sock_id =? GROUP BY sock.sock_id;"
 
 	var sock Sock
-	err := s.db.Get(&sock, query, id)
+	err := s.db.Get(ctx, &sock, query, id)
 	if err != nil {
 		s.logger.Log("database error", err)
 		return Sock{}, ErrNotFound
@@ -181,10 +181,10 @@ func (s *catalogueService) Health() []Health {
 	return health
 }
 
-func (s *catalogueService) Tags() ([]string, error) {
+func (s *catalogueService) Tags(ctx context.Context) ([]string, error) {
 	var tags []string
 	query := "SELECT name FROM tag;"
-	rows, err := s.db.Query(query)
+	rows, err := s.db.Query(ctx, query)
 	if err != nil {
 		s.logger.Log("database error", err)
 		return []string{}, ErrDBConnection
