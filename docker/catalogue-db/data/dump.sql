@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS sock_tag (
 		REFERENCES tag(tag_id)
 );
 
+INSERT INTO sock VALUES ("6d62d909-f957-430e-8689-b5129c0bb75e", "Weave special", "Limited issue Weave socks.", 17.15, 33, "/catalogue/images/weave1.jpg", "/catalogue/images/weave2.jpg");
 INSERT INTO sock VALUES ("a0a4f044-b040-410d-8ead-4de0446aec7e", "Nerd leg", "For all those leg lovers out there. A perfect example of a swivel chair trained calf. Meticulously trained on a diet of sitting and Pina Coladas. Phwarr...", 7.99, 115, "/catalogue/images/bit_of_leg_1.jpeg", "/catalogue/images/bit_of_leg_2.jpeg");
 INSERT INTO sock VALUES ("808a2de1-1aaa-4c25-a9b9-6612e8f29a38", "Crossed", "A mature sock, crossed, with an air of nonchalance.",  17.32, 738, "/catalogue/images/cross_1.jpeg", "/catalogue/images/cross_2.jpeg");
 INSERT INTO sock VALUES ("510a0d7e-8e83-4193-b483-e27e09ddc34d", "SuperSport XL", "Ready for action. Engineers: be ready to smash that next bug! Be ready, with these super-action-sport-masterpieces. This particular engineer was chased away from the office with a stick.",  15.00, 820, "/catalogue/images/puma_1.jpeg", "/catalogue/images/puma_2.jpeg");
@@ -50,6 +51,8 @@ INSERT INTO tag (name) VALUES ("black");
 INSERT INTO tag (name) VALUES ("magic");
 INSERT INTO tag (name) VALUES ("green");
 
+INSERT INTO sock_tag VALUES ("6d62d909-f957-430e-8689-b5129c0bb75e", "2");
+INSERT INTO sock_tag VALUES ("6d62d909-f957-430e-8689-b5129c0bb75e", "9");
 INSERT INTO sock_tag VALUES ("a0a4f044-b040-410d-8ead-4de0446aec7e", "4");
 INSERT INTO sock_tag VALUES ("a0a4f044-b040-410d-8ead-4de0446aec7e", "5");
 INSERT INTO sock_tag VALUES ("808a2de1-1aaa-4c25-a9b9-6612e8f29a38", "4");
