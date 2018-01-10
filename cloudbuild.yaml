@@ -1,0 +1,10 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '--cache-from', 'gcr.io/sock-shop-releases/catalogue', '-t', 'gcr.io/sock-shop-releases/catalogue', '-f', 'docker/catalogue/Dockerfile', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'gcr.io/sock-shop-releases/catalogue', 'gcr.io/sock-shop-releases/catalogue:test']
+
+images:
+  - 'gcr.io/sock-shop-releases/catalogue'
+  - 'gcr.io/sock-shop-releases/catalogue:test'
