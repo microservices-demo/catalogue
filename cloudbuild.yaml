@@ -1,10 +1,16 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '--cache-from', 'gcr.io/sock-shop-releases/catalogue', '-t', 'gcr.io/sock-shop-releases/catalogue', '-f', 'docker/catalogue/Dockerfile', '.']
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['tag', 'gcr.io/sock-shop-releases/catalogue', 'gcr.io/sock-shop-releases/catalogue:test']
+    args: [
+      'build',
+      '--cache-from=gcr.io/sock-shop-releases/catalogue:latest',
+      '--tag=gcr.io/sock-shop-releases/catalogue:$BRANCH_NAME-$SHORT_SHA',
+      '--tag=gcr.io/sock-shop-releases/catalogue:$COMMIT_SHA',
+      '--tag=gcr.io/sock-shop-releases/catalogue:latest',
+      '--file=docker/catalogue/Dockerfile',
+      '.'
+    ]
 
 images:
-  - 'gcr.io/sock-shop-releases/catalogue'
-  - 'gcr.io/sock-shop-releases/catalogue:test'
+  - 'gcr.io/sock-shop-releases/catalogue:$BRANCH_NAME-$SHORT_SHA'
+  - 'gcr.io/sock-shop-releases/catalogue:$COMMIT_SHA'
+  - 'gcr.io/sock-shop-releases/catalogue:latest'
