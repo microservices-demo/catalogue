@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: ./docker/catalogue/Dockerfile
-        image: weaveworksdemos/catalogue-dev
+        image: weaveworksdemos/catalogue
         hostname: catalogue
         restart: always
         cap_drop:
@@ -20,7 +20,7 @@ services:
     catalogue-db:
         build:
             context: ./docker/catalogue-db/
-        image: weaveworksdemos/catalogue-dev-db
+        image: weaveworksdemos/catalogue-db
         hostname: catalogue-db
         restart: always
         environment:
