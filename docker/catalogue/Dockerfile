@@ -1,11 +1,11 @@
-FROM golang:1.7
+FROM golang:1.11
 
-COPY . /go/src/github.com/microservices-demo/catalogue
+COPY go.mod go.sum /go/src/github.com/microservices-demo/catalogue/
 WORKDIR /go/src/github.com/microservices-demo/catalogue
-
-RUN go get -u github.com/FiloSottile/gvt
-RUN gvt restore && \
-    CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app github.com/microservices-demo/catalogue/cmd/cataloguesvc
+ENV GO111MODULE=on
+RUN go mod download
+ADD . /go/src/github.com/microservices-demo/catalogue/
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app github.com/microservices-demo/catalogue/cmd/cataloguesvc
 
 FROM alpine:3.4
 
