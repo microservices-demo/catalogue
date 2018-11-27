@@ -1,11 +1,12 @@
 FROM golang:1.7
 
-COPY . /go/src/github.com/microservices-demo/catalogue
+COPY vendor/manifest /go/src/github.com/microservices-demo/catalogue/vendor/manifest
 WORKDIR /go/src/github.com/microservices-demo/catalogue
 
 RUN go get -u github.com/FiloSottile/gvt
-RUN gvt restore && \
-    CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app github.com/microservices-demo/catalogue/cmd/cataloguesvc
+RUN gvt restore 
+COPY . /go/src/github.com/microservices-demo/catalogue/
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app github.com/microservices-demo/catalogue/cmd/cataloguesvc
 
 FROM alpine:3.4
 
@@ -19,8 +20,9 @@ RUN	addgroup -g ${SERVICE_GID} ${SERVICE_GROUP} && \
 	apk add --update libcap
 
 WORKDIR /
-COPY --from=0 /app /app
 COPY images/ /images/
+
+COPY --from=0 /app /app
 
 RUN	chmod +x /app && \
 	chown -R ${SERVICE_USER}:${SERVICE_GROUP} /app /images && \
