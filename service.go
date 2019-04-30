@@ -18,6 +18,7 @@ type Service interface {
 	List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) // GET /catalogue
 	Count(tags []string) (int, error)                                        // GET /catalogue/size
 	Get(id string) (Sock, error)                                             // GET /catalogue/{id}
+	GetId(id string) (Sock, error)                                             // GET /catalogue/{id}
 	Tags() ([]string, error)                                                 // GET /tags
 	Health() []Health                                                        // GET /health
 }
@@ -145,6 +146,23 @@ func (s *catalogueService) Count(tags []string) (int, error) {
 	}
 
 	return count, nil
+}
+
+func (s *catalogueService) GetId(id string) (Sock, error) {
+	query := "SELECT sock.sock_id AS id,sock.name, sock.description, sock.price, sock.count, sock.image_url_1, sock.image_url_2 FROM sock WHERE sock.name = "
+	query=query+"\""+id+"\""
+
+	var sock Sock
+	err := s.db.Get(&sock, query)
+	if err != nil {
+		s.logger.Log("database error", err)
+		return Sock{}, ErrNotFound
+	}
+
+	sock.ImageURL = []string{sock.ImageURL_1, sock.ImageURL_2}
+	sock.Tags = strings.Split(sock.TagString, ",")
+
+	return sock, nil
 }
 
 func (s *catalogueService) Get(id string) (Sock, error) {

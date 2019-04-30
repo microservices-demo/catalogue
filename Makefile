@@ -1,7 +1,7 @@
-NAME = weaveworksdemos/catalogue
+NAME = gcr.io/kavach-builds/sock-shop/catalogue
 DBNAME = weaveworksdemos/catalogue-db
 
-TAG=$(TRAVIS_COMMIT)
+TAG=latest
 
 INSTANCE = catalogue
 
@@ -10,7 +10,8 @@ INSTANCE = catalogue
 default: test
 
 release:
-	docker build -t $(NAME) -f ./docker/catalogue/Dockerfile .
+	docker build -t $(NAME):$(TAG) -f ./docker/catalogue/Dockerfile .
+	docker push $(NAME):$(TAG)
 
 test: 
 	GROUP=weaveworksdemos COMMIT=test ./scripts/build.sh
