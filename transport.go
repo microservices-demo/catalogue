@@ -55,6 +55,19 @@ func MakeHTTPHandler(ctx context.Context, e Endpoints, imagePath string, logger 
 		encodeResponse,
 		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /catalogue/size", logger)))...,
 	))
+	r.Methods("GET").Path("/catalogue/sock").Handler(httptransport.NewServer(
+		ctx,
+		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
+			Name:    "GetId",
+			Timeout: 30 * time.Second,
+			ReadyToTrip: func(counts gobreaker.Counts) bool {
+				return false
+			},
+		}))(e.GetIdEndpoint),
+		decodeGetIdRequest,
+		encodeGetResponse, // special case, this one can have an error
+		append(options, httptransport.ServerBefore(opentracing.FromHTTPRequest(tracer, "GET /catalogue/sock", logger)))...,
+	))
 	r.Methods("GET").Path("/catalogue/{id}").Handler(httptransport.NewServer(
 		ctx,
 		circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{
@@ -148,6 +161,12 @@ func decodeCountRequest(_ context.Context, r *http.Request) (interface{}, error)
 	}
 	return countRequest{
 		Tags: tags,
+	}, nil
+}
+
+func decodeGetIdRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	return getRequest{
+		ID: r.URL.Query().Get("id"),
 	}, nil
 }
 

@@ -15,6 +15,7 @@ import (
 type Endpoints struct {
 	ListEndpoint   endpoint.Endpoint
 	CountEndpoint  endpoint.Endpoint
+	GetIdEndpoint  endpoint.Endpoint
 	GetEndpoint    endpoint.Endpoint
 	TagsEndpoint   endpoint.Endpoint
 	HealthEndpoint endpoint.Endpoint
@@ -27,6 +28,7 @@ func MakeEndpoints(s Service, tracer stdopentracing.Tracer) Endpoints {
 		ListEndpoint:   opentracing.TraceServer(tracer, "GET /catalogue")(MakeListEndpoint(s)),
 		CountEndpoint:  opentracing.TraceServer(tracer, "GET /catalogue/size")(MakeCountEndpoint(s)),
 		GetEndpoint:    opentracing.TraceServer(tracer, "GET /catalogue/{id}")(MakeGetEndpoint(s)),
+		GetIdEndpoint:  opentracing.TraceServer(tracer, "GET /catalogue/sock")(MakeGetIdEndpoint(s)),
 		TagsEndpoint:   opentracing.TraceServer(tracer, "GET /tags")(MakeTagsEndpoint(s)),
 		HealthEndpoint: opentracing.TraceServer(tracer, "GET /health")(MakeHealthEndpoint(s)),
 	}
@@ -47,6 +49,15 @@ func MakeCountEndpoint(s Service) endpoint.Endpoint {
 		req := request.(countRequest)
 		n, err := s.Count(req.Tags)
 		return countResponse{N: n, Err: err}, err
+	}
+}
+
+// MakeGetIdEndpoint returns an endpoint via the given service.
+func MakeGetIdEndpoint(s Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+		req := request.(getRequest)
+		sock, err := s.GetId(req.ID)
+		return getResponse{Sock: sock, Err: err}, err
 	}
 }
 

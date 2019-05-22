@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: ./docker/catalogue/Dockerfile
-        image: weaveworksdemos/catalogue
+        image: kavach/catalogue
         hostname: catalogue
         restart: always
         cap_drop:
