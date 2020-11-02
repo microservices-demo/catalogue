@@ -53,7 +53,7 @@ jobs:
       - name: Submit Coveralls
         env:
           COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: goveralls -coverprofile=cover.profile -service=github
+        run: goveralls -coverprofile=coverage.out -service=github
 
       # Push to dockerhub
       - name: Push catalogue to Docker Hub
