@@ -3,16 +3,15 @@ sudo: required
 services:
   - docker
 go:
-  - 1.7
+  - 1.11
 before_install:
-  - go get -u github.com/FiloSottile/gvt
-  - gvt restore
+  - go mod download
   - go get -u github.com/mattn/goveralls
 
 install: true
 
 env:
-  - GROUP=weaveworksdemos COMMIT=$TRAVIS_COMMIT TAG=$TRAVIS_TAG REPO=catalogue;
+  - GROUP=weaveworksdemos COMMIT=$TRAVIS_COMMIT TAG=$TRAVIS_TAG REPO=catalogue GO111MODULE=on
 
 script:
   - set -e

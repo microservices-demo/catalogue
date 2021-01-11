@@ -21,8 +21,7 @@ Checkout the API Spec [here](http://microservices-demo.github.io/api/index?url=h
 
 #### Dependencies
 ```
-go get -u github.com/FiloSottile/gvt
-gvt restore
+GO111MODULE=on go mod download
 ```
 
 #### Go tools
@@ -31,7 +30,7 @@ $GOPATH directory: $GOPATH/src/github.com/microservices-demo/catalogue/. Once th
 
 ```
 cd $GOPATH/src/github.com/microservices-demo/catalogue/cmd/cataloguesvc/
-go build -o catalogue
+GO111MODULE=on go build -o catalogue
 ```
 
 The result is a binary named `catalogue`, in the current directory.
