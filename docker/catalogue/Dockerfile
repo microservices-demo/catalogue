@@ -15,16 +15,14 @@ ENV	SERVICE_USER=myuser \
 	SERVICE_GID=10001
 
 RUN	addgroup -g ${SERVICE_GID} ${SERVICE_GROUP} && \
-	adduser -g "${SERVICE_NAME} user" -D -H -G ${SERVICE_GROUP} -s /sbin/nologin -u ${SERVICE_UID} ${SERVICE_USER} && \
-	apk add --update libcap
+	adduser -g "${SERVICE_NAME} user" -D -H -G ${SERVICE_GROUP} -s /sbin/nologin -u ${SERVICE_UID} ${SERVICE_USER}
 
 WORKDIR /
 COPY --from=0 /app /app
 COPY images/ /images/
 
 RUN	chmod +x /app && \
-	chown -R ${SERVICE_USER}:${SERVICE_GROUP} /app /images && \
-	setcap 'cap_net_bind_service=+ep' /app
+	chown -R ${SERVICE_USER}:${SERVICE_GROUP} /app /images
 
 USER ${SERVICE_USER}
 
@@ -42,5 +40,5 @@ LABEL org.label-schema.vendor="Weaveworks" \
   org.label-schema.vcs-ref="${COMMIT}" \
   org.label-schema.schema-version="1.0"
 
-CMD ["/app", "-port=80"]
-EXPOSE 80
+CMD ["/app", "-port=8080"]
+EXPOSE 8080
