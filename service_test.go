@@ -5,10 +5,9 @@ import (
 	"reflect"
 	"strings"
 	"testing"
-
+        "gopkg.in/DATA-DOG/go-sqlmock.v1"
 	"github.com/go-kit/kit/log"
 	"github.com/jmoiron/sqlx"
-	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 var (
@@ -131,7 +130,7 @@ func TestCatalogueServiceCount(t *testing.T) {
 		if err != nil {
 			t.Errorf(
 				"Count(%v): returned error %s",
-				testcase.tags, err.Error(),
+				testcase.tags,
 				err.Error(),
 			)
 		}
