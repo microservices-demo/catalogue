@@ -106,7 +106,11 @@ func main() {
 	}
 
 	// Data domain.
-	db, err := sqlx.Open("mysql", *dsn)
+	var db catalogue.Database
+	sqlxdb, err := sqlx.Open("mysql", *dsn)
+	//db = &catalogue.SqlxDb{Db: sqlxdb, Logger: logger}
+	db = catalogue.NewDatabase(sqlxdb, logger)
+	db = catalogue.DbTracingMiddleware()(db)
 	if err != nil {
 		logger.Log("err", err)
 		os.Exit(1)

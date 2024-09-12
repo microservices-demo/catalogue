@@ -4,21 +4,19 @@ package catalogue
 // catalogue service. Everything here is agnostic to the transport (HTTP).
 
 import (
-	"errors"
-	"strings"
+	"context"
 	"time"
 
 	"github.com/go-kit/kit/log"
-	"github.com/jmoiron/sqlx"
 )
 
 // Service is the catalogue service, providing read operations on a saleable
 // catalogue of sock products.
 type Service interface {
-	List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) // GET /catalogue
-	Count(tags []string) (int, error)                                        // GET /catalogue/size
-	Get(id string) (Sock, error)                                             // GET /catalogue/{id}
-	Tags() ([]string, error)                                                 // GET /tags
+	List(ctx context.Context, tags []string, order string, pageNum, pageSize int) ([]Sock, error) // GET /catalogue
+	Count(ctx context.Context, tags []string) (int, error)                                        // GET /catalogue/size
+	Get(ctx context.Context, id string) (Sock, error)                                             // GET /catalogue/{id}
+	Tags(ctx context.Context) ([]string, error)                                                 // GET /tags
 	Health() []Health                                                        // GET /health
 }
 
@@ -46,17 +44,9 @@ type Health struct {
 	Time    string `json:"time"`
 }
 
-// ErrNotFound is returned when there is no sock for a given ID.
-var ErrNotFound = errors.New("not found")
-
-// ErrDBConnection is returned when connection with the database fails.
-var ErrDBConnection = errors.New("database connection error")
-
-var baseQuery = "SELECT sock.sock_id AS id, sock.name, sock.description, sock.price, sock.count, sock.image_url_1, sock.image_url_2, GROUP_CONCAT(tag.name) AS tag_name FROM sock JOIN sock_tag ON sock.sock_id=sock_tag.sock_id JOIN tag ON sock_tag.tag_id=tag.tag_id"
-
 // NewCatalogueService returns an implementation of the Service interface,
 // with connection to an SQL database.
-func NewCatalogueService(db *sqlx.DB, logger log.Logger) Service {
+func NewCatalogueService(db Database, logger log.Logger) Service {
 	return &catalogueService{
 		db:     db,
 		logger: logger,
@@ -64,43 +54,14 @@ func NewCatalogueService(db *sqlx.DB, logger log.Logger) Service {
 }
 
 type catalogueService struct {
-	db     *sqlx.DB
+	db     Database
 	logger log.Logger
 }
 
-func (s *catalogueService) List(tags []string, order string, pageNum, pageSize int) ([]Sock, error) {
-	var socks []Sock
-	query := baseQuery
-
-	var args []interface{}
-
-	for i, t := range tags {
-		if i == 0 {
-			query += " WHERE tag.name=?"
-			args = append(args, t)
-		} else {
-			query += " OR tag.name=?"
-			args = append(args, t)
-		}
-	}
-
-	query += " GROUP BY id"
-
-	if order != "" {
-		query += " ORDER BY ?"
-		args = append(args, order)
-	}
-
-	query += ";"
-
-	err := s.db.Select(&socks, query, args...)
+func (s *catalogueService) List(ctx context.Context, tags []string, order string, pageNum, pageSize int) ([]Sock, error) {
+	socks, err := s.db.GetSocks(ctx, tags, order)
 	if err != nil {
-		s.logger.Log("database error", err)
 		return []Sock{}, ErrDBConnection
-	}
-	for i, s := range socks {
-		socks[i].ImageURL = []string{s.ImageURL_1, s.ImageURL_2}
-		socks[i].Tags = strings.Split(s.TagString, ",")
 	}
 
 	// DEMO: Change 0 to 850
@@ -111,54 +72,19 @@ func (s *catalogueService) List(tags []string, order string, pageNum, pageSize i
 	return socks, nil
 }
 
-func (s *catalogueService) Count(tags []string) (int, error) {
-	query := "SELECT COUNT(DISTINCT sock.sock_id) FROM sock JOIN sock_tag ON sock.sock_id=sock_tag.sock_id JOIN tag ON sock_tag.tag_id=tag.tag_id"
-
-	var args []interface{}
-
-	for i, t := range tags {
-		if i == 0 {
-			query += " WHERE tag.name=?"
-			args = append(args, t)
-		} else {
-			query += " OR tag.name=?"
-			args = append(args, t)
-		}
-	}
-
-	query += ";"
-
-	sel, err := s.db.Prepare(query)
-
+func (s *catalogueService) Count(ctx context.Context, tags []string) (int, error) {
+	count, err := s.db.CountSocks(ctx, tags)
 	if err != nil {
-		s.logger.Log("database error", err)
-		return 0, ErrDBConnection
+		return 0, err
 	}
-	defer sel.Close()
-
-	var count int
-	err = sel.QueryRow(args...).Scan(&count)
-
-	if err != nil {
-		s.logger.Log("database error", err)
-		return 0, ErrDBConnection
-	}
-
 	return count, nil
 }
 
-func (s *catalogueService) Get(id string) (Sock, error) {
-	query := baseQuery + " WHERE sock.sock_id =? GROUP BY sock.sock_id;"
-
-	var sock Sock
-	err := s.db.Get(&sock, query, id)
+func (s *catalogueService) Get(ctx context.Context, id string) (Sock, error) {
+	sock, err := s.db.GetSock(ctx, id)
 	if err != nil {
-		s.logger.Log("database error", err)
-		return Sock{}, ErrNotFound
+		return Sock{}, err
 	}
-
-	sock.ImageURL = []string{sock.ImageURL_1, sock.ImageURL_2}
-	sock.Tags = strings.Split(sock.TagString, ",")
 
 	return sock, nil
 }
@@ -181,22 +107,10 @@ func (s *catalogueService) Health() []Health {
 	return health
 }
 
-func (s *catalogueService) Tags() ([]string, error) {
-	var tags []string
-	query := "SELECT name FROM tag;"
-	rows, err := s.db.Query(query)
+func (s *catalogueService) Tags(ctx context.Context) ([]string, error) {
+	tags, err := s.db.GetTags(ctx)
 	if err != nil {
-		s.logger.Log("database error", err)
-		return []string{}, ErrDBConnection
-	}
-	var tag string
-	for rows.Next() {
-		err = rows.Scan(&tag)
-		if err != nil {
-			s.logger.Log("database error", err)
-			continue
-		}
-		tags = append(tags, tag)
+		return []string{}, err
 	}
 	return tags, nil
 }
