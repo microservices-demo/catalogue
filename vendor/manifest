@@ -763,24 +763,24 @@
 			"notests": true
 		},
 		{
-			"importpath": "gopkg.in/DATA-DOG/go-sqlmock.v1",
-			"repository": "https://gopkg.in/DATA-DOG/go-sqlmock.v1",
+			"importpath": "github.com/DATA-DOG/go-sqlmock",
+			"repository": "https://github.com/DATA-DOG/go-sqlmock",
 			"vcs": "git",
 			"revision": "d4cd2ca2ad1cc2130bba385aab072218f131f636",
 			"branch": "master",
 			"notests": true
 		},
 		{
-			"importpath": "gopkg.in/airbrake/gobrake.v2",
-			"repository": "https://gopkg.in/airbrake/gobrake.v2",
+			"importpath": "github.com/airbrake/gobrake",
+			"repository": "https://github.com/airbrake/gobrake",
 			"vcs": "git",
 			"revision": "668876711219e8b0206e2994bf0a59d889c775aa",
 			"branch": "master",
 			"notests": true
 		},
 		{
-			"importpath": "gopkg.in/gemnasium/logrus-airbrake-hook.v2",
-			"repository": "https://gopkg.in/gemnasium/logrus-airbrake-hook.v2",
+			"importpath": "github.com/gemnasium/logrus-airbrake-hook",
+			"repository": "https://github.com/gemnasium/logrus-airbrake-hook",
 			"vcs": "git",
 			"revision": "bfee1239d796830ca346767650cce5ba90d58c57",
 			"branch": "master",
