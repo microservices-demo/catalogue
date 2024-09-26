@@ -116,7 +116,7 @@ func main() {
 	// Check if DB connection can be made, only for logging purposes, should not fail/exit
 	err = db.Ping()
 	if err != nil {
-		logger.Log("Error", "Unable to connect to Database", "DSN", dsn)
+		logger.Log("Error", "Unable to connect to Database", "DSN", dsn, "ERR", err)
 	}
 
 	// Service domain.
